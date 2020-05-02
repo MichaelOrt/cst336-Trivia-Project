@@ -1,0 +1,81 @@
+<%- include ('templates/header'); -%>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"">
+  <a class="navbar-brand" href="#">Trivia</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Categories</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Friends</a>
+      </li>
+    </ul>
+     <form class="form-inline">
+  
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+  </form>
+    
+  </div>
+</nav>
+
+<br><br>
+<div class="container">
+  <div class="card-deck mb-3 text-center">
+   
+  <!-- Category table -->
+  <table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Movies</td>
+     
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Geography</td>
+      
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Science</td>
+
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>History</td>
+
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Technology</td>
+
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Cars</td>
+
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Health</td>
+      
+    </tr>
+  </tbody>
+  </table>
+
+  </div>
+
+<%- include ('templates/footer'); -%>
