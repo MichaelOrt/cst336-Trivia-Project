@@ -1,8 +1,20 @@
 body{
 	margin: 10px 0px auto auto;
 	text-align: center;
+	background-color: #19181A; /*black */
+	color: #66fcf1;
 }
-
+.jumbotron{
+	background-color: #1f2833;
+	border-radius: 8px;
+	color: #66fcf1;
+	
+}
+.btn{
+	border-color: #66fcf1;
+	background-color: #1f2833; /* dark blue*/
+	color: #66fcf1; /* teal */
+}
 table {
 	text-align: left;
 }
