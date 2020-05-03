@@ -5,6 +5,7 @@ var mysql = require('mysql');
 var bodyParser = require("body-parser");
 var session = require('express-session');
 var bcrypt = require('bcrypt');
+const request = require('request');
 var app = express();
 
 
@@ -33,9 +34,12 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
+
+
 function isAuthenticated(req, res, next){
     if(!req.session.authenticated) res.redirect('/login');
     else next();
+    
 }
 
 function checkUsername(username){
@@ -57,8 +61,38 @@ function checkPassword(password, hash){
     });
 }
 
+
+/*Dictionary categories*/
+var categories = {
+    "General Knowledge" : 9,
+    "Entertainment: Books" : 10,
+    "Entertainment: Film" : 11,
+    "Entertainment: Music" : 12,
+    "Entertainment: Musicals & Theatres" : 13,
+    "Entertainment: Television" : 14,
+    "Entertainment: Video Games" : 15,
+    "Entertainment: Board Games" : 16,
+    "Science & Nature" : 17,
+    "Science: Computers" : 18,
+    "Science: Mathematics" : 19,
+    "Mythology" : 20,
+    "Sports" : 21,
+    "Geography" : 22,
+    "History" : 23,
+    "Politics" : 24,
+    "Art" : 25,
+    "Celebrities" : 26,
+    "Animals" : 27,
+    "Vehicles" : 28,
+    "Entertainment: Comics" : 29,
+    "Science: Gadgets" : 30,
+    "Entertainment: Japanese Anime & Manga" : 31,
+    "Entertainment: Cartoon & Animations" : 32
+};
+
 /* Home Route*/
 app.get('/', function(req, res){
+    
     res.render('home');
 });
 
@@ -68,6 +102,7 @@ app.get('/login', function(req, res){
 });
 
 app.post('/login', async function(req, res){
+    //let parsedData = await retrieveQuestions('10','10','','');
     let isUserExist   = await checkUsername(req.body.username);
     let hashedPasswd  = isUserExist.length > 0 ? isUserExist[0].password : '';
     let passwordMatch = await checkPassword(req.body.password, hashedPasswd);
@@ -83,6 +118,48 @@ app.post('/login', async function(req, res){
 
 app.get('/register', function(req, res){
     res.render('register');
+});
+app.get('/quiz', async function(req, res){
+    var numberOfQuestions = Math.floor(Math.random() * 25) + 1; 
+    let quizInfo = await retrieveQuestions(numberOfQuestions,'','','');
+    //console.log(quizInfo)
+    
+    var questionValues = {
+        'easy':{
+            'boolean' : 1,
+            'multiple': 2
+        },
+        'medium':{
+            'boolean' : 2,
+            'multiple': 3
+        },
+        'hard':{
+            'boolean': 4,
+            'multiple':5
+        }
+    }
+    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
+});
+app.post('/quiz', async function(req, res){
+    
+    let quizInfo = await retrieveQuestions('5','10','','');
+    //console.log(quizInfo)
+    
+    var questionValues = {
+        'easy':{
+            'boolean' : 1,
+            'multiple': 2
+        },
+        'medium':{
+            'boolean' : 2,
+            'multiple': 3
+        },
+        'hard':{
+            'boolean': 4,
+            'multiple':5
+        }
+    }
+    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
 });
 
 app.post('/register', function(req, res){
@@ -102,10 +179,57 @@ app.get('/welcome', isAuthenticated, function(req, res){
    res.render('welcome', {user: req.session.user}); 
 });
 
+app.get('/categories', isAuthenticated, function(req, res){
+   res.render('categories', {user: req.session.user});
+});
+app.get('/friends', isAuthenticated, function(req, res){
+   res.render('friends', {user: req.session.user});
+});
+
 /* Error Route*/
 app.get('*', function(req, res){
    res.render('error'); 
 });
+
+
+function retrieveQuestions(amount, category, difficulty, type){
+    
+    var url = `https://opentdb.com/api.php?amount=${amount}`;
+    if(category.length){
+        url+=`&category=${category}`;
+    }
+    if(difficulty.length){
+        url+=`&difficulty=${difficulty}`;
+    }
+    if(type.length){
+       url+=`&type=${type}`; 
+    }
+    
+    return new Promise( function(resolve, reject){
+        request(url,
+                 function (error, response, body) {
+    
+            if (!error && response.statusCode == 200  ) { //no issues in the request
+                
+                 let parsedData = JSON.parse(body); //converts string to JSON
+                 resolve(parsedData);
+                
+            } else {
+                reject(error);
+                console.log(response.statusCode);
+                console.log(error);
+            }
+    
+          });//request
+   
+    });
+    
+}
+
+
+function grade(){
+    console.log("grade");
+}
 
 app.listen(process.env.PORT || 3000, function(){
     console.log('Server has been started');
