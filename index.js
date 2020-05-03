@@ -28,8 +28,8 @@ app.set('view engine', 'ejs');
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'michaelort',
-    password: 'michaelort',
+    user: 'carmelo',
+    password: 'carmelo',
     database: 'Trivia'
 });
 connection.connect();
