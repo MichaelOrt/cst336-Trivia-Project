@@ -18,3 +18,23 @@ body{
 table {
 	text-align: left;
 }
+.container{
+	width: 50%;
+	background-color: #1f2833;
+	padding: 0 25px 40px 10px;
+	border:2px solid #66fcf1;
+	border-radius: 5px;
+	box-shadow: 5px 5px 5px #66fcf1;
+}
+ul {
+    list-style-type: none;
+    width: 100%;
+    margin: auto;
+    padding: 0px;
+}
+#prev, #next{
+	margin-top: 20px;
+}
+#navbar{
+	margin-bottom: 25px;
+}
