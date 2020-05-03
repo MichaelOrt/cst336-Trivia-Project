@@ -3,51 +3,20 @@
 
 <div class="container">
  
-   
   <!-- Category table -->
   <table class="table">
   <thead>
     <tr>
-      <th scope="col">#</th>
+      <!--<th scope="col">#</th>-->
       <th scope="col">Category</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Movies</td>
-     
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Geography</td>
-      
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Science</td>
-
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>History</td>
-
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Technology</td>
-
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Cars</td>
-
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Health</td>
-      
-    </tr>
+    
+   <%list.forEach(function(l){%>
+            <tr>
+            <td><a href=""> <%= l -%> </a></td>
+        <%});%>
   </tbody>
   </table>
 

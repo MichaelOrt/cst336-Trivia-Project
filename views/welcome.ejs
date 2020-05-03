@@ -1,6 +1,5 @@
 <%- include ('templates/header'); -%>
 <%- include ('templates/nav'); -%>
-<%= console.log(categoryList) -%>
 <div class="container">
   <div class="card-deck mb-3 text-center">
 
@@ -26,7 +25,9 @@
       </div>
       <div class="card-body">
         <ul class="list-unstyled mt-3 mb-4">
-          <li>Categories here</li>
+          <%categoryList.forEach(function(c){%>
+            <li><a href=""> <%= c -%> </a></li>
+        <%});%>
         </ul>
       </div>
     </div>
