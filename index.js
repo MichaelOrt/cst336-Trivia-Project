@@ -28,8 +28,8 @@ app.set('view engine', 'ejs');
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'michaelort',
-    password: 'michaelort',
+    user: 'carmelo',
+    password: 'carmelo',
     database: 'Trivia'
 });
 connection.connect();
@@ -91,9 +91,11 @@ var categoriesList = {
 };
 
 /* Home Route*/
-app.get('/', function(req, res){
-    
-    res.render('home');
+app.get('/', async function(req, res){
+        var keys = Object.keys(categoriesList);
+     console.log(keys);
+
+    res.render('home', {categories : keys});
 });
 
 /* Login Routes */
@@ -141,10 +143,18 @@ app.get('/quiz', async function(req, res){
     }
     res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo, quizName: 'Random Trivia'});
 });
+<<<<<<< HEAD
 app.post('/quiz', async function(req, res){
     
     let quizInfo = await retrieveQuestions('5','10','','');
     
+=======
+
+app.get('/quiz/:category', async function(req, res){
+    var category = req.params.category;
+    var numberOfQuestions = Math.floor(Math.random() * 25) + 1; 
+    let quizInfo = await retrieveQuestions(numberOfQuestions, category, '','');
+>>>>>>> 34670840675b9ec13d7cc74977dfb1c1b6f1fc22
     
     var questionValues = {
         'easy':{
@@ -161,6 +171,7 @@ app.post('/quiz', async function(req, res){
         }
     }
     res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
+   
 });
 
 app.post('/register', function(req, res){
@@ -199,8 +210,13 @@ app.get('/welcome', isAuthenticated, function(req, res){
 });
 
 app.get('/categories', isAuthenticated, function(req, res){
+<<<<<<< HEAD
     var keys = Object.keys(categoriesList);
     res.render('categories', {user: req.session.user, list: keys});
+=======
+   var keys = Object.keys(categoriesList);
+   res.render('categories', {user: req.session.user, list: keys});
+>>>>>>> 34670840675b9ec13d7cc74977dfb1c1b6f1fc22
 });
 app.get('/friends', isAuthenticated, function(req, res){
     let stmt = `SELECT id FROM users WHERE username= '${req.session.user}'`
