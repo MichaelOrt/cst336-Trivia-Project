@@ -25,6 +25,7 @@ table {
 	border:2px solid #66fcf1;
 	border-radius: 5px;
 	box-shadow: 5px 5px 5px #66fcf1;
+	margin-top: 20px;
 }
 ul {
     list-style-type: none;
@@ -35,6 +36,7 @@ ul {
 #prev, #next{
 	margin-top: 20px;
 }
-#navbar{
+.navbar{
 	margin-bottom: 25px;
+	
 }
