@@ -28,8 +28,8 @@ app.set('view engine', 'ejs');
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'michaelort',
-    password: 'michaelort',
+    user: 'carmelo',
+    password: 'carmelo',
     database: 'Trivia'
 });
 connection.connect();
@@ -91,9 +91,11 @@ var categoriesList = {
 };
 
 /* Home Route*/
-app.get('/', function(req, res){
-    
-    res.render('home');
+app.get('/', async function(req, res){
+        var keys = Object.keys(categoriesList);
+     console.log(keys);
+
+    res.render('home', {categories : keys});
 });
 
 /* Login Routes */
@@ -140,10 +142,11 @@ app.get('/quiz', async function(req, res){
     }
     res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
 });
-app.post('/quiz', async function(req, res){
-    
-    let quizInfo = await retrieveQuestions('5','10','','');
-    //console.log(quizInfo)
+
+app.get('/quiz/:category', async function(req, res){
+    var category = req.params.category;
+    var numberOfQuestions = Math.floor(Math.random() * 25) + 1; 
+    let quizInfo = await retrieveQuestions(numberOfQuestions, category, '','');
     
     var questionValues = {
         'easy':{
@@ -160,6 +163,7 @@ app.post('/quiz', async function(req, res){
         }
     }
     res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
+   
 });
 
 app.post('/register', function(req, res){
@@ -182,7 +186,8 @@ app.get('/welcome', isAuthenticated, function(req, res){
 });
 
 app.get('/categories', isAuthenticated, function(req, res){
-   res.render('categories', {user: req.session.user});
+   var keys = Object.keys(categoriesList);
+   res.render('categories', {user: req.session.user, list: keys});
 });
 app.get('/friends', isAuthenticated, function(req, res){
    res.render('friends', {user: req.session.user});
