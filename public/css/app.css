@@ -36,7 +36,7 @@ ul {
 #prev, #next{
 	margin-top: 20px;
 }
-.navbar{
+.nav-custom{
 	margin-bottom: 25px;
-	
+	background-color: #1f2833;
 }
