@@ -28,8 +28,8 @@ app.set('view engine', 'ejs');
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'carmelo',
-    password: 'carmelo',
+    user: 'michaelort',
+    password: 'michaelort',
     database: 'Trivia'
 });
 connection.connect();
@@ -93,8 +93,7 @@ var categoriesList = {
 /* Home Route*/
 app.get('/', async function(req, res){
         var keys = Object.keys(categoriesList);
-     console.log(keys);
-
+   
     res.render('home', {categories : keys});
 });
 
@@ -123,8 +122,17 @@ app.get('/register', function(req, res){
 });
 app.get('/quiz', async function(req, res){
     var numberOfQuestions = Math.floor(Math.random() * 25) + 1;
-    
-    let quizInfo = await retrieveQuestions(numberOfQuestions,'','','');
+    let quizInfo;
+    var category;
+    if(req.query.category === undefined){
+        quizInfo  = await retrieveQuestions(numberOfQuestions,'','','');
+        category = "Random Trivia"
+    }
+    else{
+        category = req.query.category;
+        quizInfo  = await retrieveQuestions(numberOfQuestions,categoriesList[category],'','');
+    }
+   
     
     
     var questionValues = {
@@ -141,36 +149,11 @@ app.get('/quiz', async function(req, res){
             'multiple':5
         }
     }
-    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo, quizName: 'Random Trivia'});
+    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo, quizName: category});
 });
-<<<<<<< HEAD
-app.post('/quiz', async function(req, res){
-    
-    let quizInfo = await retrieveQuestions('5','10','','');
-    
-=======
 
 app.get('/quiz/:category', async function(req, res){
-    var category = req.params.category;
-    var numberOfQuestions = Math.floor(Math.random() * 25) + 1; 
-    let quizInfo = await retrieveQuestions(numberOfQuestions, category, '','');
->>>>>>> 34670840675b9ec13d7cc74977dfb1c1b6f1fc22
-    
-    var questionValues = {
-        'easy':{
-            'boolean' : 1,
-            'multiple': 2
-        },
-        'medium':{
-            'boolean' : 2,
-            'multiple': 3
-        },
-        'hard':{
-            'boolean': 4,
-            'multiple':5
-        }
-    }
-    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
+    res.redirect('/quiz?category='+req.params.category);
    
 });
 
@@ -198,7 +181,6 @@ app.get('/welcome', isAuthenticated, function(req, res){
               
                var string=JSON.stringify(activities);
                var activityList =  JSON.parse(string);
-               console.log(activityList);
                res.render('welcome', {user: req.session.user,
                categoryList: categoryList, score: result[0].score,
                    activityList: activityList
@@ -210,13 +192,8 @@ app.get('/welcome', isAuthenticated, function(req, res){
 });
 
 app.get('/categories', isAuthenticated, function(req, res){
-<<<<<<< HEAD
-    var keys = Object.keys(categoriesList);
-    res.render('categories', {user: req.session.user, list: keys});
-=======
    var keys = Object.keys(categoriesList);
    res.render('categories', {user: req.session.user, list: keys});
->>>>>>> 34670840675b9ec13d7cc74977dfb1c1b6f1fc22
 });
 app.get('/friends', isAuthenticated, function(req, res){
     let stmt = `SELECT id FROM users WHERE username= '${req.session.user}'`
@@ -274,17 +251,14 @@ app.post('/addscore',function(req, res) {
     var score = parseInt(req.body.userScore, 10);
     var stmt = `UPDATE users SET score = score + '${score}' WHERE ((username = '${req.session.user}'));`;
     connection.query(stmt, function(error, results) {
-                if(error) throw error;
-                console.log("score updated")
+        if(error) throw error;
         
     });
     stmt = `INSERT INTO Quiz_Taken (username, quiz_name, score, date)`+
     ` VALUES ('${req.session.user}', '${req.body.categoryName}', '${str}', now());`;
     res.redirect('/welcome');
     connection.query(stmt, function(error, results) {
-                if(error) throw error;
-                console.log("activity added")
-        
+        if(error) throw error;
     });
 });
 /* Error Route*/
