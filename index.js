@@ -91,6 +91,27 @@ app.get('/register', function(req, res){
     res.render('register');
 });
 app.get('/quiz', async function(req, res){
+    var numberOfQuestions = Math.floor(Math.random() * 25) + 1; 
+    let quizInfo = await retrieveQuestions(numberOfQuestions,'','','');
+    //console.log(quizInfo)
+    
+    var questionValues = {
+        'easy':{
+            'boolean' : 1,
+            'multiple': 2
+        },
+        'medium':{
+            'boolean' : 2,
+            'multiple': 3
+        },
+        'hard':{
+            'boolean': 4,
+            'multiple':5
+        }
+    }
+    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
+});
+app.post('/quiz', async function(req, res){
     
     let quizInfo = await retrieveQuestions('5','10','','');
     //console.log(quizInfo)
@@ -175,6 +196,7 @@ function retrieveQuestions(amount, category, difficulty, type){
     });
     
 }
+
 
 function grade(){
     console.log("grade");

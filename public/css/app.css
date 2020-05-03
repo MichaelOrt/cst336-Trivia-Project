@@ -40,3 +40,17 @@ ul {
 	margin-bottom: 25px;
 	background-color: #1f2833;
 }
+thead{
+	color: #66fcf1;
+}
+tbody{
+	color: #66fcf1;
+}
+table{
+	table-layout: fixed;
+	width: 100%;
+}
+.card{
+	background-color: #1f2833; 
+	margin-top: 30px;
+}
