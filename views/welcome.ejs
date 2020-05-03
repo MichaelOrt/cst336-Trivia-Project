@@ -7,14 +7,25 @@
     <div class="card mb-4 shadow-sm">
       <div class="card-header">
         <h4 class="my-0 font-weight-normal">Recent activity</h4>
+        <h6>Total Score: <%= score -%></h6>
+          
       </div>
       <div class="card-body">
         
-        <ul class="list-unstyled mt-3 mb-4">
-          <li>American History 4/5 400pts</li>
-          <li>Pop   2/5 240pts</li>
-        </ul>
+      
         
+      </div>
+       <div class="card-body">
+        <table>
+        		<tr><th>Quiz Taken</th><th>Score</th></tr>
+        		<tr><td colspan="2"><hr/></td></tr>
+        		 <%activityList.forEach(function(activity){%>
+            		<tr>
+            			<td><%=activity.quiz_name-%></td>
+            			<td><%=activity.score-%></td>
+        		<%});%>
+        	</table>
+        	
       </div>
     
     <!-- Random category -->

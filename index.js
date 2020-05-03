@@ -120,9 +120,10 @@ app.get('/register', function(req, res){
     res.render('register');
 });
 app.get('/quiz', async function(req, res){
-    var numberOfQuestions = Math.floor(Math.random() * 25) + 1; 
+    var numberOfQuestions = Math.floor(Math.random() * 25) + 1;
+    
     let quizInfo = await retrieveQuestions(numberOfQuestions,'','','');
-    //console.log(quizInfo)
+    
     
     var questionValues = {
         'easy':{
@@ -138,12 +139,12 @@ app.get('/quiz', async function(req, res){
             'multiple':5
         }
     }
-    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo});
+    res.render('quiz', {quizValues:questionValues, quizInfo:quizInfo, quizName: 'Random Trivia'});
 });
 app.post('/quiz', async function(req, res){
     
     let quizInfo = await retrieveQuestions('5','10','','');
-    //console.log(quizInfo)
+    
     
     var questionValues = {
         'easy':{
@@ -176,18 +177,100 @@ app.post('/register', function(req, res){
 });
 
 app.get('/welcome', isAuthenticated, function(req, res){
-    
     var categoryList = getRandCategory();
-   res.render('welcome', {user: req.session.user, categoryList: categoryList}); 
+    var stmt = `SELECT score FROM users WHERE username = '${req.session.user}'`;
+    connection.query(stmt, function(error, result){
+           if(error) throw error;
+           stmt = `SELECT quiz_name, score, date`+
+           ` from Quiz_Taken where username = '${req.session.user}'`;
+           connection.query(stmt, function(error, activities){
+              
+               var string=JSON.stringify(activities);
+               var activityList =  JSON.parse(string);
+               console.log(activityList);
+               res.render('welcome', {user: req.session.user,
+               categoryList: categoryList, score: result[0].score,
+                   activityList: activityList
+               }); 
+           });
+           
+    });
+    
 });
 
 app.get('/categories', isAuthenticated, function(req, res){
-   res.render('categories', {user: req.session.user});
+    var keys = Object.keys(categoriesList);
+    res.render('categories', {user: req.session.user, list: keys});
 });
 app.get('/friends', isAuthenticated, function(req, res){
-   res.render('friends', {user: req.session.user});
+    let stmt = `SELECT id FROM users WHERE username= '${req.session.user}'`
+    connection.query(stmt, function(error, result){
+        var userId;
+        if(error) throw error;
+        userId = result[0].id;
+        
+        let stmt2 = `select sender, username, score from pending_request, users where receiver = '${userId}'and id = sender`;
+        connection.query(stmt2, function(error, friendRequest){
+             if(error) throw error;
+             
+             var string=JSON.stringify(friendRequest);
+             var json =  JSON.parse(string);
+             
+             res.render('friends', {user: req.session.user, fq: json});
+        });
+        
+    });
+     
+    //
+});
+app.post('/addFriend', isAuthenticated, function(req, res){
+   
+   let stmt =  `SELECT id, Group_CONCAT(username ORDER by id) FROM users WHERE username IN ('${req.body.add}', '${req.session.user}') GROUP By id`;
+    connection.query(stmt, function(error, result){
+           if(error) throw error;
+            var receiver = null;
+            var sender = null;
+           
+           receiver = result[0].id;
+           sender = result[1].id;
+           let data =[receiver, sender];
+           let stmt2 = 'INSERT INTO pending_request (receiver, sender) VALUES (?, ?)';
+           connection.query(stmt2, data, function(error, friendRequest) {
+                if(error) throw error;
+                var string=JSON.stringify(friendRequest);
+                var json =  JSON.parse(string);
+                
+           });
+        });
+   res.redirect('/friends');
 });
 
+app.get('/friend/:friendId/delete', function(req, res){
+    var stmt = `DELETE FROM pending_request WHERE sender = ${req.params.friendId} and receiver = '3'`;
+  
+    connection.query(stmt, function(error, result){
+        if(error) throw error;
+        res.redirect('/friends');
+    });
+});
+app.post('/addscore',function(req, res) {
+    var str = req.body.correct;
+    var score = parseInt(req.body.userScore, 10);
+    var stmt = `UPDATE users SET score = score + '${score}' WHERE ((username = '${req.session.user}'));`;
+    connection.query(stmt, function(error, results) {
+                if(error) throw error;
+                console.log("score updated")
+        
+    });
+    stmt = `INSERT INTO Quiz_Taken (username, quiz_name, score, date)`+
+    ` VALUES ('${req.session.user}', '${req.body.categoryName}', '${str}', now());`;
+    res.redirect('/welcome');
+    connection.query(stmt, function(error, results) {
+                if(error) throw error;
+                console.log("activity added")
+        
+    });
+});
 /* Error Route*/
 app.get('*', function(req, res){
    res.render('error'); 
@@ -238,10 +321,6 @@ function getRandCategory(){
     
     return cat;
 }
-function grade(){
-    console.log("grade");
-}
-
 app.listen(process.env.PORT || 3000, function(){
     console.log('Server has been started');
 })
