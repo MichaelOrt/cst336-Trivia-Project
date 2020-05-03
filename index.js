@@ -28,8 +28,8 @@ app.set('view engine', 'ejs');
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'carmelo',
-    password: 'carmelo',
+    user: 'michaelort',
+    password: 'michaelort',
     database: 'Trivia'
 });
 connection.connect();
@@ -63,7 +63,7 @@ function checkPassword(password, hash){
 
 
 /*Dictionary categories*/
-var categories = {
+var categoriesList = {
     "General Knowledge" : 9,
     "Entertainment: Books" : 10,
     "Entertainment: Film" : 11,
@@ -176,7 +176,9 @@ app.post('/register', function(req, res){
 });
 
 app.get('/welcome', isAuthenticated, function(req, res){
-   res.render('welcome', {user: req.session.user}); 
+    
+    var categoryList = getRandCategory();
+   res.render('welcome', {user: req.session.user, categoryList: categoryList}); 
 });
 
 app.get('/categories', isAuthenticated, function(req, res){
@@ -226,7 +228,16 @@ function retrieveQuestions(amount, category, difficulty, type){
     
 }
 
-
+function getRandCategory(){
+    
+    var cat = [];
+    for(var i = 0; i < 5; i++){
+        var keys = Object.keys(categoriesList);
+        cat.push(keys[ keys.length * Math.random() << 0]);
+    }
+    
+    return cat;
+}
 function grade(){
     console.log("grade");
 }
