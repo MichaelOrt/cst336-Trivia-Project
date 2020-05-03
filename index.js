@@ -1,3 +1,4 @@
+
 /* App Configuration */
 var express = require('express');
 var methodOverride = require('method-override');
@@ -28,8 +29,8 @@ app.set('view engine', 'ejs');
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'michaelort',
-    password: 'michaelort',
+    user: 'carmelo',
+    password: 'carmelo',
     database: 'Trivia'
 });
 connection.connect();
@@ -100,6 +101,12 @@ app.get('/', async function(req, res){
 /* Login Routes */
 app.get('/login', function(req, res){
     res.render('login');
+});
+
+/* Logout Route */
+app.get('/logout', function(req, res){
+   req.session.destroy();
+   res.redirect('/');
 });
 
 app.post('/login', async function(req, res){
