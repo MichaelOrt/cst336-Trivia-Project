@@ -1,3 +1,4 @@
+
 /* App Configuration */
 var express = require('express');
 var methodOverride = require('method-override');
@@ -27,10 +28,17 @@ app.set('view engine', 'ejs');
 
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
+<<<<<<< HEAD
     host: 'un0jueuv2mam78uv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
     user: 'mrpqian8llslb2nj',
     password: 'idkc5jph9hcupo2f',
     database: 'am6vqp3388x6bmyi'
+=======
+    host: 'localhost',
+    user: 'carmelo',
+    password: 'carmelo',
+    database: 'Trivia'
+>>>>>>> 5b45d42a39cc7f56caf4ebae73118ca0b976654c
 });
 connection.connect();
 
@@ -100,6 +108,12 @@ app.get('/', async function(req, res){
 /* Login Routes */
 app.get('/login', function(req, res){
     res.render('login');
+});
+
+/* Logout Route */
+app.get('/logout', function(req, res){
+   req.session.destroy();
+   res.redirect('/');
 });
 
 app.post('/login', async function(req, res){

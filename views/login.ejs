@@ -3,6 +3,11 @@
         <h3>Welcome to login page</h3>
     </div>
 
+		<!-- Check if login and password are corrects-->
+		<%if(typeof error != 'undefined' && error){%>
+        	<h6 style='color: red;'> Incorrect login credentials! </h6>
+		<%}%>
+	
     	<form action='/login' method='POST'>
 		<div class='form-group row'>
 			<label for='username' class='col-sm-4 col-form-label'>Username</label>
