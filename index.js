@@ -27,10 +27,10 @@ app.set('view engine', 'ejs');
 
 /* Configure MySQL DBMS */
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'michaelort',
-    password: 'michaelort',
-    database: 'Trivia'
+    host: 'un0jueuv2mam78uv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    user: 'mrpqian8llslb2nj',
+    password: 'idkc5jph9hcupo2f',
+    database: 'am6vqp3388x6bmyi'
 });
 connection.connect();
 
@@ -224,16 +224,18 @@ app.post('/addFriend', isAuthenticated, function(req, res){
             var receiver = null;
             var sender = null;
            
-           receiver = result[0].id;
-           sender = result[1].id;
-           let data =[receiver, sender];
-           let stmt2 = 'INSERT INTO pending_request (receiver, sender) VALUES (?, ?)';
-           connection.query(stmt2, data, function(error, friendRequest) {
-                if(error) throw error;
-                var string=JSON.stringify(friendRequest);
-                var json =  JSON.parse(string);
-                
-           });
+           if(result[0].length){
+               receiver = result[0].id;
+               sender = result[1].id;
+               let data =[receiver, sender];
+               let stmt2 = 'INSERT INTO pending_request (receiver, sender) VALUES (?, ?)';
+               connection.query(stmt2, data, function(error, friendRequest) {
+                   if(error) throw error;
+                   var string=JSON.stringify(friendRequest);
+                   var json =  JSON.parse(string);
+                   
+               });
+           }
         });
    res.redirect('/friends');
 });
@@ -260,6 +262,27 @@ app.post('/addscore',function(req, res) {
     connection.query(stmt, function(error, results) {
         if(error) throw error;
     });
+});
+
+app.post('/anonTrivia', async function(req, res) {
+    console.log(req.body.quantity)
+    var catergories = categoriesList[req.body.categories];
+     var questionValues = {
+        'easy':{
+            'boolean' : 1,
+            'multiple': 2
+        },
+        'medium':{
+            'boolean' : 2,
+            'multiple': 3
+        },
+        'hard':{
+            'boolean': 4,
+            'multiple':5
+        }
+    }
+    let quizInfo  = await retrieveQuestions(req.body.quantity, catergories,'','');
+    res.render('anonTrivia', {quizValues:questionValues, quizInfo:quizInfo, quizName: req.body.categories} );
 });
 /* Error Route*/
 app.get('*', function(req, res){
