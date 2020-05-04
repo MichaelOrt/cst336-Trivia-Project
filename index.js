@@ -224,14 +224,13 @@ app.get('/friends', isAuthenticated, function(req, res){
     //
 });
 app.post('/addFriend', isAuthenticated, function(req, res){
-   
-   let stmt =  `SELECT id, Group_CONCAT(username ORDER by id) FROM users WHERE username IN ('${req.body.add}', '${req.session.user}') GROUP By id`;
+   let stmt = `SELECT id, username FROM users WHERE username ='${req.session.user}' or username = '${req.body.add}'`;
+   //let stmt =  `SELECT id, Group_CONCAT(username ORDER by id) FROM users WHERE username IN ('${req.body.add}', '${req.session.user}') GROUP By id`;
     connection.query(stmt, function(error, result){
            if(error) throw error;
             var receiver = null;
             var sender = null;
-           
-           if(result[0].length){
+           if(result.length == 2){
                receiver = result[0].id;
                sender = result[1].id;
                let data =[receiver, sender];
