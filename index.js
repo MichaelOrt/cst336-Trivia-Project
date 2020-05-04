@@ -168,8 +168,8 @@ app.post('/register', function(req, res){
     let salt = 10;
     bcrypt.hash(req.body.password, salt, function(error, hash){
         if(error) throw error;
-        let stmt = 'INSERT INTO users (username, password, email) VALUES (?, ?, ?)';
-        let data = [req.body.username, hash, req.body.email];
+        let stmt = 'INSERT INTO users (username, password, email, score) VALUES (?, ?, ?, ?)';
+        let data = [req.body.username, hash, req.body.email, 0];
         connection.query(stmt, data, function(error, result){
            if(error) throw error;
            res.redirect('/login');
