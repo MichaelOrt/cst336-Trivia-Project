@@ -136,6 +136,7 @@ app.get('/quiz', async function(req, res){
         category = "Random Trivia"
     }
     else{
+        console.log('req.query.category');
         category = decodeURI(req.query.category);
         quizInfo  = await retrieveQuestions(numberOfQuestions,categoriesList[category],'','');
     }
